@@ -7,10 +7,10 @@ from crawler.requests_loop import requests_get_loop
 
 def get_download_link(original_link):
     split_link = original_link.split('/')
-    download_link = 'https://i.pximg.net/img-master/img'
-    for j in range(7):
-        download_link = download_link + '/'
-        download_link = download_link + split_link[7 + j]
+    download_link = 'https://i.pximg.net/img-original/img'
+    for j in range(6):
+        download_link += '/' + split_link[7 + j]
+    download_link += '/' + split_link[13].split('_')[0] + '_' + split_link[13].split('_')[1]
     return download_link
 
 
@@ -43,9 +43,23 @@ class dailyrank_crawler:
         path = "./output/"
         if not os.path.exists(path):
             os.makedirs(path)
-        for link in download_link:
-            print("downloading " + link)
-            img_req = requests_get_loop(link, headers=self.header_referer, proxies=self.proxies)
-            with open(path + link.split('/')[-1], mode="wb") as f:
-                f.write(img_req.content)
-            print("success.")
+        for raw_link in download_link:
+            success = False
+            link = raw_link + '.png'
+            while not success:
+                print("downloading " + link)
+                img_req = requests_get_loop(link, headers=self.header_referer, proxies=self.proxies)
+
+                if len(img_req.content) > 100:
+                    with open(path + link.split('/')[-1], mode="wb") as f:
+                        f.write(img_req.content)
+                    success = True
+                else:
+                    if link.split('.')[-1] != 'jpg':
+                        link = raw_link + '.jpg'
+                    else:
+                        break
+            if success:
+                print("success.")
+            else:
+                print('unknown format!!!')
