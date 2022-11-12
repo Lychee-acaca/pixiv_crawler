@@ -24,6 +24,9 @@ class dailyrank_crawler(crawler):
 
     def dailyrank_download(self, path="./output/daily/"):
         print("{} (series) imgs will be download".format(len(self.img_id_list)))
+        cnt = 0
         for i in self.img_id_list:
+            cnt += 1
+            print("Download progress: {} / {}".format(cnt, len(self.img_id_list)))
             self.img_download(i, path)
         print("daily rank downloaded.")

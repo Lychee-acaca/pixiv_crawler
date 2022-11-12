@@ -28,6 +28,9 @@ class artist_crawler(crawler):
 
     def artist_download(self, path="./output/"):
         print("{} (series) imgs will be download".format(len(self.img_id_list)))
+        cnt = 0
         for i in self.img_id_list:
+            cnt += 1
+            print("Download progress: {} / {}".format(cnt, len(self.img_id_list)))
             self.img_download(i, path + "{}/".format(self.artist_id))
         print("artist", self.artist_id, "downloaded.")
